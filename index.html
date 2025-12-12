@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/imeges/logo2.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluffy Burger</title>
+    
+    <!-- Google Fonts: Fredoka for headings, Quicksand for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-red': '#EF4444',
+                        'brand-orange': '#F97316',
+                        'brand-yellow': '#FACC15',
+                        'brand-green': '#8BC53F',
+                        'brand-brown': '#3F1F10',
+                        'brand-dark': '#1F1A17',
+                        'brand-cream': '#FFF7ED',
+                    },
+                    fontFamily: {
+                        'sans': ['Quicksand', 'sans-serif'],
+                        'heading': ['Fredoka', 'sans-serif'],
+                        'logo': ['Fredoka', 'cursive'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FFF7ED;
+        }
+        /* Custom Scrollbar for Chrome/Safari */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #FFF7ED;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #F97316;
+          border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #EA580C;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+</body>
+</html>
