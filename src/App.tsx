@@ -163,7 +163,7 @@ const ContactView: React.FC<ContactViewProps> = ({ onShowToast }) => {
     // Service ID: 'service_7r5v124' (Updated)
     // You still need to replace TEMPLATE_ID and PUBLIC_KEY
     emailjs.sendForm('service_7r5v124', 'template_d7rbzbr', form.current!, 'Fn6M6zQDK99lZQLWk')
-      .then((result) => {
+      .then((result: any) => {
           console.log(result.text);
           setIsSending(false);
           onShowToast('تم إرسال رسالتك بنجاح! سنرد عليك قريباً.');
