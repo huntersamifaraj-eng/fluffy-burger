@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Category, MenuItem, CartItem, ViewState } from './types';
 import { MENU_ITEMS, SAUCE_OPTIONS, DRINK_OPTIONS, SNACK_OPTIONS, FRIES_OPTIONS, STRIPS_OPTIONS, SANDWICH_MODIFICATIONS, CLASSIC_MODIFICATIONS, BEE_MODIFICATIONS, FLUFFY_MODIFICATIONS, CHILLI_MODIFICATIONS, CRUNCHY_MODIFICATIONS } from './data';
 import { MenuCard } from './components/MenuCard';
 import { CartView } from './components/CartView';
-import emailjs from '@emailjs/browser'; // Make sure to run: npm install @emailjs/browser
+import * as emailjs from '@emailjs/browser';
+import type { EmailJSResponseStatus } from '@emailjs/browser'; // Make sure to run: npm install @emailjs/browser
 
 const MEAL_UPCHARGE = 1.25; // Difference between Sandwich and Meal price for regular burgers
 
@@ -147,163 +149,176 @@ const HeroSlider = ({ items, onOrderNow }: { items: MenuItem[], onOrderNow: () =
 };
 
 // --- Contact View Component ---
+// --- Contact View Component ---
 interface ContactViewProps {
   onShowToast: (msg: string) => void;
 }
 
-const ContactView: React.FC<ContactViewProps> = ({ onShowToast }) => {
+const ContactView = ({ onShowToast }: ContactViewProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [isSending, setIsSending] = useState(false);
 
-  const sendEmail = (e: React.FormEvent) => {
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!form.current) return;
+
     setIsSending(true);
 
-    // REPLACE THESE WITH YOUR ACTUAL EMAILJS KEYS
-    // Service ID: 'service_7r5v124' (Updated)
-    // You still need to replace TEMPLATE_ID and PUBLIC_KEY
-    emailjs.sendForm('service_7r5v124', 'template_d7rbzbr', form.current!, 'Fn6M6zQDK99lZQLWk')
-      .then((result: any) => {
+    emailjs
+      .sendForm(
+        'service_7r5v124',
+        'template_d7rbzbr',
+        form.current,
+        'Fn6M6zQDK99lZQLWk'
+      )
+      .then(
+        (result: EmailJSResponseStatus) => {
           console.log(result.text);
           setIsSending(false);
           onShowToast('تم إرسال رسالتك بنجاح! سنرد عليك قريباً.');
-          if (form.current) form.current.reset();
-      }, (error) => {
-          console.log(error.text);
+          form.current?.reset();
+        },
+        (error: unknown) => {
+          console.log(error);
           setIsSending(false);
           alert('حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.');
-      });
+        }
+      );
   };
 
   return (
     <div className="w-full container mx-auto px-4 py-8 animate-fade-in font-sans pb-32">
-       <div className="text-center py-8 mb-8">
-          <div className="inline-block bg-white/90 backdrop-blur-md px-8 py-4 md:px-10 md:py-6 rounded-[3rem] shadow-xl border-b-8 border-brand-green relative overflow-hidden">
-            <h2 className="text-4xl md:text-6xl font-heading font-black text-brand-dark">
-              تواصل <span className="text-brand-green">معنا</span>
-            </h2>
-            <p className="text-gray-500 font-bold mt-2">نحن نحب سماع رأيك!</p>
+      <div className="text-center py-8 mb-8">
+        <div className="inline-block bg-white/90 backdrop-blur-md px-8 py-4 md:px-10 md:py-6 rounded-[3rem] shadow-xl border-b-8 border-brand-green relative overflow-hidden">
+          <h2 className="text-4xl md:text-6xl font-heading font-black text-brand-dark">
+            تواصل <span className="text-brand-green">معنا</span>
+          </h2>
+          <p className="text-gray-500 font-bold mt-2">نحن نحب سماع رأيك!</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+        {/* Left Column: Info & Map */}
+        <div className="space-y-8">
+          {/* Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-3xl shadow-lg border-l-8 border-brand-orange hover:-translate-y-1 transition-transform">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-2xl mb-4">📍</div>
+              <h3 className="font-heading font-black text-xl text-brand-dark mb-4">زورونا</h3>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex items-start gap-3">
+                  <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p className="text-gray-600 font-bold text-sm leading-snug">
+                    <span className="text-brand-dark block text-base mb-0.5">الزرقاء</span>
+                    الزرقاء الجديدة - شارع الكرامة
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p className="text-gray-600 font-bold text-sm leading-snug">
+                    <span className="text-brand-dark block text-base mb-0.5">عمان - الرابية</span>
+                    شارع اسلام اياد
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
+                  <p className="text-gray-600 font-bold text-sm leading-snug">
+                    <span className="text-brand-dark block text-base mb-0.5">عمان - الجبيهة</span>
+                    بالقرب من اشارات المنهل
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Card */}
+            <div className="bg-white p-6 rounded-3xl shadow-lg border-l-8 border-brand-green hover:-translate-y-1 transition-transform">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl mb-4">📞</div>
+              <h3 className="font-heading font-black text-xl text-brand-dark mb-2">اتصل بنا</h3>
+              <p className="text-gray-500 text-lg leading-relaxed font-bold font-heading">
+                0787218880
+              </p>
+            </div>
+          </div>
+
+          {/* Opening Hours */}
+          <div className="bg-brand-dark text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10"></div>
+            <h3 className="text-2xl font-heading font-black mb-6 flex items-center gap-3">
+              <span className="text-brand-yellow">⏰</span> ساعات العمل
+            </h3>
+            <div className="space-y-3 font-medium">
+              <div className="flex justify-between pb-2">
+                <span>يومياً (السبت - الجمعة)</span>
+                <span className="text-brand-yellow" dir="ltr">12:00 PM - 01:30 AM</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Map Placeholder */}
+          <div className="h-64 bg-gray-200 rounded-3xl overflow-hidden shadow-lg border-4 border-white relative group">
+            <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
+              <div className="text-gray-400 font-bold text-xl">الخريطة</div>
+            </div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full">
+              <div className="text-brand-red text-5xl drop-shadow-lg animate-bounce">📍</div>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Left Column: Info & Map */}
-          <div className="space-y-8">
-             {/* Info Cards */}
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               <div className="bg-white p-6 rounded-3xl shadow-lg border-l-8 border-brand-orange hover:-translate-y-1 transition-transform">
-                 <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-2xl mb-4">📍</div>
-                 <h3 className="font-heading font-black text-xl text-brand-dark mb-4">زورونا</h3>
-                 
-                 <div className="flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
-                      <p className="text-gray-600 font-bold text-sm leading-snug">
-                        <span className="text-brand-dark block text-base mb-0.5">الزرقاء</span>
-                        الزرقاء الجديدة - شارع الكرامة
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-start gap-3">
-                      <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
-                      <p className="text-gray-600 font-bold text-sm leading-snug">
-                        <span className="text-brand-dark block text-base mb-0.5">عمان - الرابية</span>
-                        شارع اسلام اياد
-                      </p>
-                    </div>
+        {/* Right Column: Contact Form */}
+        <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 h-fit">
+          <h3 className="text-3xl font-heading font-black text-brand-dark mb-6"> للشكاوي والاقتراحات 📝</h3>
 
-                    <div className="flex items-start gap-3">
-                      <span className="w-3 h-3 bg-brand-orange rounded-full mt-1.5 flex-shrink-0"></span>
-                      <p className="text-gray-600 font-bold text-sm leading-snug">
-                        <span className="text-brand-dark block text-base mb-0.5">عمان - الجبيهة</span>
-                        بالقرب من اشارات المنهل
-                      </p>
-                    </div>
-                 </div>
-               </div>
-               
-               {/* Contact Card - Updated to Green */}
-               <div className="bg-white p-6 rounded-3xl shadow-lg border-l-8 border-brand-green hover:-translate-y-1 transition-transform">
-                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl mb-4">📞</div>
-                 <h3 className="font-heading font-black text-xl text-brand-dark mb-2">اتصل بنا</h3>
-                 <p className="text-gray-500 text-lg leading-relaxed font-bold font-heading">
-                   0787218880
-                 </p>
-               </div>
-             </div>
+          <form ref={form} className="space-y-6" onSubmit={sendEmail}>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
+              <input
+                type="text"
+                name="user_name"
+                required
+                className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400"
+                placeholder="الاسم"
+              />
+            </div>
 
-             {/* Opening Hours */}
-             <div className="bg-brand-dark text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10"></div>
-                <h3 className="text-2xl font-heading font-black mb-6 flex items-center gap-3">
-                  <span className="text-brand-yellow">⏰</span> ساعات العمل
-                </h3>
-                <div className="space-y-3 font-medium">
-                  <div className="flex justify-between pb-2">
-                    <span>يومياً (السبت - الجمعة)</span>
-                    <span className="text-brand-yellow" dir="ltr">12:00 PM - 01:30 AM</span>
-                  </div>
-                </div>
-             </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
+              <input
+                type="email"
+                name="user_email"
+                required
+                className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400"
+                placeholder="example@mail.com"
+              />
+            </div>
 
-             {/* Map Placeholder */}
-             <div className="h-64 bg-gray-200 rounded-3xl overflow-hidden shadow-lg border-4 border-white relative group">
-                <div className="absolute inset-0 bg-gray-300 flex items-center justify-center">
-                   <div className="text-gray-400 font-bold text-xl">الخريطة</div>
-                </div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full">
-                   <div className="text-brand-red text-5xl drop-shadow-lg animate-bounce">📍</div>
-                </div>
-             </div>
-          </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">الرسالة</label>
+              <textarea
+                rows={4}
+                name="message"
+                required
+                className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400 resize-none"
+                placeholder="كيف يمكننا مساعدتك؟"
+              />
+            </div>
 
-          {/* Right Column: Contact Form */}
-          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-gray-100 h-fit">
-            <h3 className="text-3xl font-heading font-black text-brand-dark mb-6"> للشكاوي والاقتراحات 📝</h3>
-       
-            <form ref={form} className="space-y-6" onSubmit={sendEmail}>
-               <div>
-                 <label className="block text-sm font-bold text-gray-700 mb-2">الاسم الكامل</label>
-                 <input 
-                   type="text" 
-                   name="user_name"
-                   required
-                   className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400"
-                   placeholder="الاسم"
-                 />
-               </div>
-               <div>
-                 <label className="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
-                 <input 
-                   type="email" 
-                   name="user_email"
-                   required
-                   className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400"
-                   placeholder="example@mail.com"
-                 />
-               </div>
-               <div>
-                 <label className="block text-sm font-bold text-gray-700 mb-2">الرسالة</label>
-                 <textarea 
-                   rows={4}
-                   name="message"
-                   required
-                   className="w-full px-5 py-4 bg-brand-cream rounded-xl border-2 border-transparent focus:border-brand-orange outline-none transition-all font-medium text-brand-dark placeholder-gray-400 resize-none"
-                   placeholder="كيف يمكننا مساعدتك؟"
-                 />
-               </div>
-               <button 
-                 type="submit"
-                 disabled={isSending}
-                 className={`w-full py-4 rounded-xl font-black text-lg shadow-lg shadow-red-200 transition-all transform active:scale-95 ${
-                   isSending ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-brand-red hover:bg-red-700 text-white hover:-translate-y-1'
-                 }`}
-               >
-                 {isSending ? 'جاري الإرسال...' : 'إرسال'}
-               </button>
-            </form>
-          </div>
+            <button
+              type="submit"
+              disabled={isSending}
+              className={`w-full py-4 rounded-xl font-black text-lg shadow-lg shadow-red-200 transition-all transform active:scale-95 ${
+                isSending ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-brand-red hover:bg-red-700 text-white hover:-translate-y-1'
+              }`}
+            >
+              {isSending ? 'جاري الإرسال...' : 'إرسال'}
+            </button>
+          </form>
         </div>
+      </div>
     </div>
   );
 };
@@ -664,7 +679,7 @@ const App: React.FC = () => {
               onClick={() => setActiveView('home')}
             >
               <div className="w-10 h-10 md:w-14 md:h-14 rounded-full overflow-hidden flex items-center justify-center">
-                  <img src="public/imeges/logo2.png" alt="Fluffy Logo" className="w-full h-full object-cover" />
+                  <img src="/imeges/logo2.png" alt="Fluffy Logo" className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col -space-y-2 justify-center">
                 <h1 className="text-2xl md:text-3xl text-black font-black tracking-wide font-logo leading-none uppercase">
